@@ -1,0 +1,12 @@
+# save files — don't commit personal game data
+*.sav
+
+# app build output and dependencies
+app/node_modules/
+app/dist/
+app/.vite/
+app/Downloads/
+
+# OS
+.DS_Store
+Thumbs.db

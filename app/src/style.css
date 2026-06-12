@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ficsit-orange: #FF851B;
+  --color-ficsit-bg:     #111111;
+  --color-ficsit-surface:#1a1a1a;
+  --color-ficsit-border: #2a2a2a;
+  --color-ficsit-text:   #e0e0e0;
+  --color-ficsit-muted:  #777777;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #111111;
+  color: #e0e0e0;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+}

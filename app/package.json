@@ -1,0 +1,30 @@
+{
+  "name": "app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@etothepii/satisfactory-file-parser": "^4.1.1",
+    "@tailwindcss/vite": "^4.3.1",
+    "cytoscape": "^3.34.0",
+    "cytoscape-cola": "^2.5.1",
+    "vue": "^3.5.34"
+  },
+  "devDependencies": {
+    "@types/cytoscape": "^3.21.9",
+    "@types/node": "^24.12.3",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "@vue/tsconfig": "^0.9.1",
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.1",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.12",
+    "vue-tsc": "^3.2.8"
+  }
+}
