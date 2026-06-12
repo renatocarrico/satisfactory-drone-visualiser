@@ -5,7 +5,7 @@ self.onmessage = async (e: MessageEvent<WorkerInMessage>) => {
   if (e.data.type !== 'parse') return
 
   try {
-    const saveGame = Parser.ParseSave('save', e.data.buffer as unknown as Buffer)
+    const saveGame = Parser.ParseSave('save', e.data.buffer as any)
     const network = extractNetwork(saveGame)
     const msg: WorkerOutMessage = { type: 'done', network }
     self.postMessage(msg)
@@ -72,7 +72,7 @@ function extractNetwork(saveGame: any): DroneNetwork {
   const edges: DroneEdge[] = []
   const seen = new Set<string>()
 
-  for (const [infoPath, info] of infoObjects) {
+  for (const [, info] of infoObjects) {
     const myStationPath: string = info.properties?.mStation?.value?.pathName ?? ''
     const pairedInfoPath: string = info.properties?.mPairedStation?.value?.pathName ?? ''
     if (!myStationPath || !pairedInfoPath) continue

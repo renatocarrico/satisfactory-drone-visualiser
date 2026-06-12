@@ -112,7 +112,8 @@ function spatialPositions(network: DroneNetwork): Record<string, { x: number; y:
 
 // ── Cytoscape stylesheet ─────────────────────────────────────────────────────
 
-const stylesheet: cytoscape.Stylesheet[] = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const stylesheet: any[] = [
   {
     selector: 'node',
     style: {
