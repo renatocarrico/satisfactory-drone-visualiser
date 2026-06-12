@@ -217,6 +217,8 @@ function initCy() {
     cy.on('viewport', syncMapImage)
     // Preset layout runs synchronously, so zoom/pan are already set — sync immediately
     nextTick(syncMapImage)
+  } else {
+    setupRubberBand()
   }
 
   applySearch(props.searchQuery)
@@ -240,8 +242,63 @@ function getLayout(positions: Record<string, { x: number; y: number }>) {
     padding: 60,
     nodeSpacing: 40,
     edgeLength: 180,
-    maxSimulationTime: 3000,
+    maxSimulationTime: 1000,
+    avoidOverlap: true,
+    handleDisconnected: true,
   }
+}
+
+// ── Rubber band drag (network mode only) ────────────────────────────────────
+
+function pullNeighbors(
+  dragged: cytoscape.NodeSingular,
+  node: cytoscape.NodeSingular,
+  dx: number,
+  dy: number,
+  depth: number,
+  visited: Set<string>,
+) {
+  if (depth > 4) return
+  const factor = 0.5 ** depth
+  const dp = dragged.position()
+  node.connectedEdges().connectedNodes().forEach((neighbor) => {
+    const n = neighbor as cytoscape.NodeSingular
+    if (visited.has(n.id())) return
+    visited.add(n.id())
+    // Only pull when the drag moves away from this neighbor (rubber band stretching).
+    // dot(drag_delta, dragged→neighbor) < 0 means the dragged node is moving in the
+    // opposite direction to where the neighbor sits — i.e. the band is being stretched.
+    const np = n.position()
+    const dot = dx * (np.x - dp.x) + dy * (np.y - dp.y)
+    if (dot >= 0) return
+    n.position({ x: np.x + dx * factor, y: np.y + dy * factor })
+    pullNeighbors(dragged, n, dx, dy, depth + 1, visited)
+  })
+}
+
+function setupRubberBand() {
+  if (!cy) return
+  let lastPos: { x: number; y: number } | null = null
+
+  cy.on('grab', 'node', (evt) => {
+    const p = evt.target.position()
+    lastPos = { x: p.x, y: p.y }
+  })
+
+  cy.on('drag', 'node', (evt) => {
+    const node = evt.target as cytoscape.NodeSingular
+    const p = node.position()
+    if (!lastPos) return
+    const dx = p.x - lastPos.x
+    const dy = p.y - lastPos.y
+    lastPos = { x: p.x, y: p.y }
+    if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return
+    pullNeighbors(node, node, dx, dy, 1, new Set([node.id()]))
+  })
+
+  cy.on('free', 'node', () => {
+    lastPos = null
+  })
 }
 
 // ── Search highlighting ───────────────────────────────────────────────────────
